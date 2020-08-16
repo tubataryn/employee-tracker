@@ -23,7 +23,7 @@ const askQ = function () {
             ]
         })
         .then(function (answer) {
-            //console.log(answer);
+            console.log(answer);
             //start of switch statment for user choice
             switch (answer.startQ) {
                 case "view all employees":

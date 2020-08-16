@@ -1,5 +1,5 @@
 //Dependencies
-const connection = require("./db/db.js");
+const connection = require("./db.js");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql");
@@ -23,7 +23,7 @@ const askQ = function () {
             ]
         })
         .then(function (answer) {
-            console.log(answer);
+            //console.log(answer);
             //start of switch statment for user choice
             switch (answer.startQ) {
                 case "view all employees":
@@ -69,7 +69,7 @@ function viewAllDepartments() {
 
 //allows user to view all employee roles currently in database
 function viewAllRoles() {
-    connection.query("SELECT * FROM role", function (err, answer) {
+    connection.query("SELECT * FROM position", function (err, answer) {
         console.log("\n Roles Retrieved from Database \n");
         console.table(answer);
     });
@@ -80,8 +80,8 @@ function viewAllRoles() {
 function viewAllEmployees() {
     console.log("Retrieving Employees from Database");
     var fancyQuery =
-        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id";
-    connection.query("SELECT * FROM role", function (err, answer) {
+        "SELECT employee.id, employee.first_name, employee.last_name, position.title, department.name AS department, title.salary FROM employee LEFT JOIN position ON employee.position_id = position.id LEFT JOIN department on position.department_id = department.id";
+    connection.query("SELECT * FROM position", function (err, answer) {
         console.log("\n Roles Retrieved from Database \n");
         console.table(answer);
     });
@@ -109,7 +109,7 @@ function addEmployee() {
                 {
                     first_name: answer.firstName,
                     last_name: answer.lastName,
-                    role_id: null,
+                    position_id: null,
                     manager_id: null,
                 },
                 function (err, answer) {
@@ -154,13 +154,13 @@ function updateEmpRole() {
                 const idToUpdate = {};
                 idToUpdate.employeeId = parseInt(answer.updateEmpRole.split(" ")[0]);
                 if (answer.newrole === "manager") {
-                    idToUpdate.role_id = 1;
+                    idToUpdate.position_id = 1;
                 } else if (answer.newrole === "employee") {
-                    idToUpdate.role_id = 2;
+                    idToUpdate.position_id = 2;
                 }
                 connection.query(
-                    "UPDATE employee SET role_id = ? WHERE id = ?",
-                    [idToUpdate.role_id, idToUpdate.employeeId],
+                    "UPDATE employee SET position_id = ? WHERE id = ?",
+                    [idToUpdate.position_id, idToUpdate.employeeId],
                     function (err, data) {
                         askQ();
                     }
@@ -200,7 +200,7 @@ function addRole() {
         .prompt([
             {
                 type: "input",
-                message: "Enter employee role",
+                message: "Enter employee title",
                 name: "addTitle"
             },
             {
@@ -214,9 +214,9 @@ function addRole() {
                 name: "addDepId"
             }
         ])
-        .jthen(function (answer) {
+        .then(function (answer) {
             connection.query(
-                "INSERT INTO role SET ?",
+                "INSERT INTO position SET ?",
                 {
                     title: answer.addTitle,
                     salary: answer.addSalary,

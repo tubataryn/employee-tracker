@@ -7,13 +7,21 @@ const connection = mysql.createConnection({
 
     user: "root",
 
-    password: "",
+    password: "secret",
 
     database: "employee_trackerDB",
 });
 
-connection.connect(function(err) {
+/*connection.connect(function(err) {
     if (err) throw err;
+    console.log("connected as id" + connection.threadId);
+});*/
+
+connection.connect(function(err) {
+    if (err) {
+        console.log(err)
+        throw err
+    };
     console.log("connected as id" + connection.threadId);
 });
 
